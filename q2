@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 user=$(who | head -n | awk "{print $1;}")
 echo "Hello $user. Please enter your birthday."
 read -p "Enter day: " day
@@ -8,25 +9,45 @@ read -p "Enter month: " month
 year=$(date +%Y)
 now=$(date -d "$(date +%m)/$(date +%d)/$year" +%s)
 birth=$(date -d "$month/$day/$year" +%s)
+msg=""
+holiday=0
 
 if [ $now -eq $(date -d "12/25/$year" +%s) ]; then
-    echo "Merry Christmas!"
+    msg="Merry Christmas!"
+    holiday=1
 elif [ $now -eq $(date -d "10/31/$year" +%s) ]; then
-    echo "Happy Halloween!"
+    msg="Happy Halloween!"
+    holiday=2
 elif [ $now -eq $(date -d "03/17/$year" +%s) ]; then
-    echo "Happy St. Patricks Day!"
-elif [ $now -eq $(date -d "7/01/$year" +%s) ]; then
-    echo "Happy Canada Day!"
+    msg="Happy St. Patricks Day!"
+    holiday=3
+elif [ $now -eq $(date -d "04/04/$year" +%s) ]; then
+    msg="Happy Canada Day!"
+    holiday=4
 fi
 
-
-
+#checks if birthday date is lessthan now. Which means birthday is next year. 
 if [ $birth -lt $now ]; then
     year=$(($year+1))
 fi
 
+#calculate (birthday - currentdate) / 86400 to get number of days 
 diff=$((($(date -d "$month/$day/$year" +%s)-$(date +%s))/(60*60*24)))
 
-
-echo $diff days
- 
+if [ $diff -eq 0 ] && [ $holiday -eq 0 ]; then
+    echo Happy Birthday!
+elif [ $diff -eq 0 ] && [ $holiday -eq 1 ]; then
+    echo Happy Birth-mas!
+elif [ $diff -eq 0 ] && [ $holiday -eq 2 ]; then
+    echo Happy Boo-day!
+elif [ $diff -eq 0 ] && [ $holiday -eq 3 ]; then
+    echo Happy drunken birthday!
+elif [ $diff -eq 0 ] && [ $holiday -eq 4 ]; then
+    echo Happy Birthday goose!
+elif [ $diff -ne 0 ] && [ $holiday -ne 0 ]; then
+    echo $diff days until your birthday.
+    echo $msg
+elif [ $diff -ne 0 ] && [ $holiday -eq 0 ]; then
+    echo $diff days until your birthday.
+fi
+exit 0
