@@ -11,7 +11,15 @@ birth=$(date -d "$month/$day/$year" +%s)
 
 if [ $now -eq $(date -d "12/25/$year" +%s) ]; then
     echo "Merry Christmas!"
+elif [ $now -eq $(date -d "10/31/$year" +%s) ]; then
+    echo "Happy Halloween!"
+elif [ $now -eq $(date -d "03/17/$year" +%s) ]; then
+    echo "Happy St. Patricks Day!"
+elif [ $now -eq $(date -d "7/01/$year" +%s) ]; then
+    echo "Happy Canada Day!"
 fi
+
+
 
 if [ $birth -lt $now ]; then
     year=$(($year+1))
