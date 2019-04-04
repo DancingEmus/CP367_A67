@@ -23,7 +23,7 @@ then
 	    cd ..
 	    
 	else
-	    ls -l $val
+	    ls -i $val
 	    
 	    echo found
 	    cd ..

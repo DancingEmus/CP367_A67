@@ -23,7 +23,11 @@ then
 	    cd ..
 	    
 	else
-	    ls -a $val
+<<<<<<< HEAD
+	    ls -l $val
+=======
+	    ls -i $val
+>>>>>>> hotfix
 	    
 	    echo found
 	    cd ..
