@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+user=$(who | head -n | awk "{print $1;}")
+echo "Hello $user. Please enter your birthday."
+read -p "Enter day: " day
+read -p "Enter month: " month
+
+year=$(date +%Y)
+now=$(date -d "$(date +%m)/$(date +%d)/$year" +%s)
+birth=$(date -d "$month/$day/$year" +%s)
+
+if [ $now -eq $(date -d "04/04/$year" +%s) ]; then
+    echo "Merry Christmas!"
+fi
+
+if [ $birth -lt $now ]; then
+    year=$(($year+1))
+fi
+
+diff=$((($(date -d "$month/$day/$year" +%s)-$(date +%s))/(60*60*24)))
+
+
+echo $diff days
+ 
