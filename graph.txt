@@ -1,0 +1,6 @@
+*   933607b (HEAD -> master) Resolve merge conflict
+|\  
+| * 8ca4580 (hotfix) Change to inode version ls
+* | 86a1ded Change to long list version of ls
+|/  
+* a67f140 Add working code
