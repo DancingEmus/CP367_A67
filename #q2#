@@ -12,6 +12,11 @@ birth=$(date -d "$month/$day/$year" +%s)
 msg=""
 holiday=0
 
+
+#check for leap
+if [ $birth -eq $(date -d "02/29/$year" +%s) ]; then
+    
+
 if [ $now -eq $(date -d "12/25/$year" +%s) ]; then
     msg="Merry Christmas!"
     holiday=1
