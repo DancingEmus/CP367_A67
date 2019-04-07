@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 if [ $# -gt 2 ]; then
 echo Error too many arguments given
 exit
@@ -25,71 +26,82 @@ is_leap () {
 
 }
 
-echo "Hello $user. Please enter your birthday."
-read -p "Enter day: " day
-read -p "Enter month: " month
-read -p "Enter your year of birth: " yob
+stop=""
 
-while [ $offset -gt 5478 ]; do
-    echo "You entered an offset greater than 15 years. Maximum days allowed is 5478"
-    read -p "Enter current date offset:" offset
+while [[ "$stop" != "q" ]]
+do
+
+    echo "Hello $user. Please enter your birthday."
+    read -p "Enter day: " day
+    read -p "Enter month: " month
+    read -p "Enter your year of birth: " yob
+
+    while [ $offset -gt 5478 ]; do
+	echo "You entered an offset greater than 15 years. Maximum days allowed is 5478"
+	read -p "Enter current date offset:" offset
+    done
+
+    if [ $day -eq 29 ] && [ $month -eq 2 ]; then
+	echo SPECIAL
+    fi
+    year=$(date +%Y)
+    now=$(date -d "$offset days" +%s)                                                                                                                                       
+    newYear=$(date -d @$now +%Y)
+    
+    echo "New Year: $newYear"                                                                    
+    birth=$(date -d "$month/$day/$newYear" +%s)
+    msg=""
+    holiday=0
+    
+    age=$(($newYear-$yob))
+    #echo "your age is: $age"                                                                                                                          
+    
+    is_leap "$year"
+    
+    echo $count
+    
+    if [ $now -eq $(date -d "12/25/$newYear" +%s) ]; then
+	msg="Merry Christmas!"
+	holiday=1
+    elif [ $now -eq $(date -d "10/31/$newYear" +%s) ]; then
+	msg="Happy Halloween!"
+	holiday=2
+    elif [ $now -eq $(date -d "03/17/$newYear" +%s) ]; then
+	msg="Happy St. Patricks Day!"
+	holiday=3
+    elif [ $now -eq $(date -d "04/04/$newYear" +%s) ]; then
+	msg="Happy Canada Day!"
+	holiday=4
+    fi
+
+    #checks if birthday date is lessthan now. Which means birthday is next year.                                                                       
+    if [ $birth -lt $now ]; then
+	newYear=$(($newYear+1))
+    fi
+
+    #calculate (birthday - currentdate) / 86400 to get number of days                                                                                  
+    diff=$((($(date -d "$month/$day/$newYear" +%s)-($now))/(60*60*24)))
+    
+    if [ $diff -eq 0 ] && [ $holiday -eq 0 ]; then
+	echo Happy Birthday! You are $age years old!
+    elif [ $diff -eq 0 ] && [ $holiday -eq 1 ]; then
+	echo Happy Birth-mas! You are $age years old!
+    elif [ $diff -eq 0 ] && [ $holiday -eq 2 ]; then
+	echo Happy Boo-day! You are $age years old!
+    elif [ $diff -eq 0 ] && [ $holiday -eq 3 ]; then
+	echo Happy drunken birthday! You are $age years old!
+    elif [ $diff -eq 0 ] && [ $holiday -eq 4 ]; then
+	echo Happy Birthday goose! You are $age years old!
+    elif [ $diff -ne 0 ] && [ $holiday -ne 0 ]; then
+	echo $diff days until your birthday.
+	echo $msg
+    elif [ $diff -ne 0 ] && [ $holiday -eq 0 ]; then
+	echo $diff days until your birthday.
+    fi
+
+    
+    echo "Press 'q' to quit or any other button to continue: "
+    read stop
 done
 
-if [ $day -eq 29 ] && [ $month -eq 2 ]; then
-   echo SPECIAL
-fi
-year=$(date +%Y)
-now=$(date -d "$offset days" +%s)                                                                                                                                       
-newYear=$(date -d @$now +%Y)
-
-echo "New Year: $newYear"                                                                    
-birth=$(date -d "$month/$day/$newYear" +%s)
-msg=""
-holiday=0
-
-age=$(($newYear-$yob))
-#echo "your age is: $age"                                                                                                                          
-
-is_leap "$year"
-
-echo $count
-
-if [ $now -eq $(date -d "12/25/$newYear" +%s) ]; then
-    msg="Merry Christmas!"
-    holiday=1
-elif [ $now -eq $(date -d "10/31/$newYear" +%s) ]; then
-    msg="Happy Halloween!"
-    holiday=2
-elif [ $now -eq $(date -d "03/17/$newYear" +%s) ]; then
-    msg="Happy St. Patricks Day!"
-    holiday=3
-elif [ $now -eq $(date -d "04/04/$newYear" +%s) ]; then
-    msg="Happy Canada Day!"
-    holiday=4
-fi
-
-#checks if birthday date is lessthan now. Which means birthday is next year.                                                                       
-if [ $birth -lt $now ]; then
-    year=$(($year+1))
-fi
-
-#calculate (birthday - currentdate) / 86400 to get number of days                                                                                  
-diff=$((($(date -d "$month/$day/$newYear" +%s)-($now))/(60*60*24)))
-
-if [ $diff -eq 0 ] && [ $holiday -eq 0 ]; then
-    echo Happy Birthday! You are $age years old!
-elif [ $diff -eq 0 ] && [ $holiday -eq 1 ]; then
-    echo Happy Birth-mas! You are $age years old!
-elif [ $diff -eq 0 ] && [ $holiday -eq 2 ]; then
-    echo Happy Boo-day! You are $age years old!
-elif [ $diff -eq 0 ] && [ $holiday -eq 3 ]; then
-    echo Happy drunken birthday! You are $age years old!
-elif [ $diff -eq 0 ] && [ $holiday -eq 4 ]; then
-    echo Happy Birthday goose! You are $age years old!
-elif [ $diff -ne 0 ] && [ $holiday -ne 0 ]; then
-    echo $diff days until your birthday.
-    echo $msg
-elif [ $diff -ne 0 ] && [ $holiday -eq 0 ]; then
-    echo $diff days until your birthday.
-fi
 exit 0
