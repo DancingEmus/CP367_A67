@@ -9,16 +9,16 @@ offset=$(($1-1))
 
 user=($(who | head -1))
 is_leap () {
-    count=0
+    
     if [ $(($1 % 4)) -eq 0 ]; then
-        if [ $(($var1 % 100)) -eq 0 ]; then
-            if [ $(($var1 % 400)) -eq 0 ]; then
-                exit
+        if [ $(($1 % 100)) -eq 0 ]; then
+            if [ $(($1 % 400)) -eq 0 ]; then
+                isLeap=0
             else
-                count=1
+                isLeap=1
             fi
         else
-            count=1
+            isLeap=1
         fi
     
         
@@ -36,6 +36,31 @@ do
     read -p "Enter month: " month
     read -p "Enter your year of birth: " yob
 
+
+now=$(date -d "$offset days" +%s) 
+
+newYear=$(date -d @$now +%Y)
+newDay=$(date -d @$now +%d)
+newMonth=$(date -d @$now +%m)
+
+
+if [ $day -eq 29 ] && [ $month -eq 2 ]; then
+    is_leap "$newYear"
+    extraYears=0
+    
+    while [[ $isLeap -eq 0 ]]; do
+	newYear=$((newYear + 1))
+	is_leap "$newYear"
+	extraYears=$((extraYears + 1))
+
+    done
+    yearsInSeconds=$((extraYears * 31556926))
+    
+    now=$(($now + yearsInSeconds))
+    fi
+
+
+    
     while [ $offset -gt 5478 ]; do
 	echo "You entered an offset greater than 15 years. Maximum days allowed is 5478"
 	read -p "Enter current date offset:" offset
@@ -45,8 +70,8 @@ do
 	echo SPECIAL
     fi
     year=$(date +%Y)
-    now=$(date -d "$offset days" +%s)                                                                                                                                       
-    newYear=$(date -d @$now +%Y)
+
+    
     
     echo "New Year: $newYear"                                                                    
     birth=$(date -d "$month/$day/$newYear" +%s)
