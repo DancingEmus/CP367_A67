@@ -4,7 +4,7 @@ if [ $# -gt 2 ]; then
 echo Error too many arguments given
 exit
 fi
-offset=$(($1-1))
+offset=$(($1))
 
 
 user=($(who | head -1))
@@ -42,7 +42,7 @@ now=$(date -d "$offset days" +%s)
 newYear=$(date -d @$now +%Y)
 newDay=$(date -d @$now +%d)
 newMonth=$(date -d @$now +%m)
-
+now=$(date -d "$newMonth/$newDay/$newYear" +%s)
 
 if [ $day -eq 29 ] && [ $month -eq 2 ]; then
     is_leap "$newYear"
@@ -56,7 +56,7 @@ if [ $day -eq 29 ] && [ $month -eq 2 ]; then
     done
     yearsInSeconds=$((extraYears * 31556926))
     
-    now=$(($now + yearsInSeconds))
+   # now=$(($now + yearsInSeconds))
     fi
 
 
@@ -66,15 +66,9 @@ if [ $day -eq 29 ] && [ $month -eq 2 ]; then
 	read -p "Enter current date offset:" offset
     done
 
-    if [ $day -eq 29 ] && [ $month -eq 2 ]; then
-	echo SPECIAL
-    fi
-    year=$(date +%Y)
-
     
+    year=$(date +%Y)                                                                    
     
-    echo "New Year: $newYear"                                                                    
-    birth=$(date -d "$month/$day/$newYear" +%s)
     msg=""
     holiday=0
     
@@ -83,27 +77,25 @@ if [ $day -eq 29 ] && [ $month -eq 2 ]; then
     
     is_leap "$year"
     
-    echo $count
-    
-    if [ $now -eq $(date -d "12/25/$newYear" +%s) ]; then
+    if [ $newDay -eq 25 ] && [ $newMonth -eq 12 ]; then
 	msg="Merry Christmas!"
 	holiday=1
-    elif [ $now -eq $(date -d "10/31/$newYear" +%s) ]; then
+    elif [ $newDay -eq 31 ] && [ $newMonth -eq 10 ]; then
 	msg="Happy Halloween!"
 	holiday=2
-    elif [ $now -eq $(date -d "03/17/$newYear" +%s) ]; then
+    elif [ $newDay -eq 17 ] && [ $newMonth -eq 3 ]; then
 	msg="Happy St. Patricks Day!"
 	holiday=3
-    elif [ $now -eq $(date -d "04/04/$newYear" +%s) ]; then
+    elif [ $newDay -eq 1 ] && [ $newMonth -eq 7 ]; then
 	msg="Happy Canada Day!"
 	holiday=4
     fi
 
-    #checks if birthday date is lessthan now. Which means birthday is next year.                                                                       
-    if [ $birth -lt $now ]; then
+    #checks if birthday date is lessthan now. Which means birthday is next year.
+    birth=$(date -d "$month/$day/$newYear" +%s)
+    if [[ $birth -lt $now ]]; then
 	newYear=$(($newYear+1))
     fi
-
     #calculate (birthday - currentdate) / 86400 to get number of days                                                                                  
     diff=$((($(date -d "$month/$day/$newYear" +%s)-($now))/(60*60*24)))
     
