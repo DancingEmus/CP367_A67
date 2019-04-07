@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+!/usr/bin/env bash                                                                                                                                
 
 user=($(who | head -1))
 is_leap () {
@@ -16,12 +16,14 @@ is_leap () {
     else
         echo "NOT LEAP YEAR"
     fi
-    
+
 }
+
 echo "Hello $user. Please enter your birthday."
 read -p "Enter day: " day
 read -p "Enter month: " month
 read -p "Enter current date offset in days: " offset
+read -p "Enter your year of birth: " yob
 
 while [ $offset -gt 5478 ]; do
     echo "You entered an offset greater than 15 years. Maximum days allowed is 5478"
@@ -30,19 +32,20 @@ done
 
 if [ $day -eq 29 ] && [ $month -eq 2 ]; then
    echo SPECIAL
-fi    
+fi
 year=$(date +%Y)
 now=$(date -d "$offset days" +%s)
 
-#now=$(date -d "$(date +%m)/$(($(date +%d)+$offset))/$year" +%s)
-echo $now
+#now=$(date -d "$(date +%m)/$(($(date +%d)+$offset))/$year" +%s)                                                                                   
+#echo $now                                                                                                                                         
 newYear=$(date -d @$now +%Y)
-echo "new year: $newYear"
+#echo "new year: $newYear"                                                                                                                         
 birth=$(date -d "$month/$day/$year" +%s)
 msg=""
 holiday=0
 
-
+age=$(($newYear-$yob))
+#echo "your age is: $age"                                                                                                                          
 
 is_leap "$year"
 
@@ -62,24 +65,24 @@ elif [ $now -eq $(date -d "04/04/$year" +%s) ]; then
     holiday=4
 fi
 
-#checks if birthday date is lessthan now. Which means birthday is next year.                         
+#checks if birthday date is lessthan now. Which means birthday is next year.                                                                       
 if [ $birth -lt $now ]; then
     year=$(($year+1))
 fi
 
-#calculate (birthday - currentdate) / 86400 to get number of days                                    
+#calculate (birthday - currentdate) / 86400 to get number of days                                                                                  
 diff=$((($(date -d "$month/$day/$year" +%s)-($now))/(60*60*24)))
 
 if [ $diff -eq 0 ] && [ $holiday -eq 0 ]; then
-    echo Happy Birthday!
+    echo Happy Birthday! You are $age years old!
 elif [ $diff -eq 0 ] && [ $holiday -eq 1 ]; then
-    echo Happy Birth-mas!
+    echo Happy Birth-mas! You are $age years old!
 elif [ $diff -eq 0 ] && [ $holiday -eq 2 ]; then
-    echo Happy Boo-day!
+    echo Happy Boo-day! You are $age years old!
 elif [ $diff -eq 0 ] && [ $holiday -eq 3 ]; then
-    echo Happy drunken birthday!
+    echo Happy drunken birthday! You are $age years old!
 elif [ $diff -eq 0 ] && [ $holiday -eq 4 ]; then
-    echo Happy Birthday goose!
+    echo Happy Birthday goose! You are $age years old!
 elif [ $diff -ne 0 ] && [ $holiday -ne 0 ]; then
     echo $diff days until your birthday.
     echo $msg
@@ -87,7 +90,3 @@ elif [ $diff -ne 0 ] && [ $holiday -eq 0 ]; then
     echo $diff days until your birthday.
 fi
 exit 0
-
-
-
-
