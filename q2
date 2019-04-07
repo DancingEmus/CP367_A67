@@ -5,12 +5,37 @@ user=$(who | head -n | awk "{print $1;}")
 echo "Hello $user. Please enter your birthday."
 read -p "Enter day: " day
 read -p "Enter month: " month
+read -p "Enter current date offset in days: " offset
+
+while [ $offset -gt 5478 ]; do
+    echo "You entered an offset greater than 15 years. Maximum days allowed is 5478"
+    read -p "Enter current date offset:" offset
+done
 
 year=$(date +%Y)
-now=$(date -d "$(date +%m)/$(date +%d)/$year" +%s)
+now=$(date -d "$(date +%m)/$(($(date +%d)+$offset))/$year" +%s)
+echo $now
 birth=$(date -d "$month/$day/$year" +%s)
 msg=""
 holiday=0
+
+is_leap () {
+    if [ $(($1 % 4)) -eq 0 ]; then
+        if [ $(($var1 % 100)) -eq 0 ]; then
+            if [ $(($var1 % 400)) -eq 0 ]; then
+                echo "IS LEAP YEAR"
+            else
+                echo "NOT LEAP YEAR"
+            fi
+        else
+            echo "ISLEAP YEAR"
+        fi
+    else
+        echo "NOT LEAP YEAR"
+    fi
+}
+
+is_leap "$year"
 
 if [ $now -eq $(date -d "12/25/$year" +%s) ]; then
     msg="Merry Christmas!"
@@ -26,13 +51,13 @@ elif [ $now -eq $(date -d "04/04/$year" +%s) ]; then
     holiday=4
 fi
 
-#checks if birthday date is lessthan now. Which means birthday is next year. 
+#checks if birthday date is lessthan now. Which means birthday is next year.                         
 if [ $birth -lt $now ]; then
     year=$(($year+1))
 fi
 
-#calculate (birthday - currentdate) / 86400 to get number of days 
-diff=$((($(date -d "$month/$day/$year" +%s)-$(date +%s))/(60*60*24)))
+#calculate (birthday - currentdate) / 86400 to get number of days                                    
+diff=$((($(date -d "$month/$day/$year" +%s)-$($now))/(60*60*24)))
 
 if [ $diff -eq 0 ] && [ $holiday -eq 0 ]; then
     echo Happy Birthday!
@@ -51,3 +76,4 @@ elif [ $diff -ne 0 ] && [ $holiday -eq 0 ]; then
     echo $diff days until your birthday.
 fi
 exit 0
+
