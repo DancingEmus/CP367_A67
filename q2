@@ -12,28 +12,18 @@ while [ $offset -gt 5478 ]; do
     read -p "Enter current date offset:" offset
 done
 
+if [ $day -eq 29 ] && [ $month -eq 2 ]
+then
+    
 year=$(date +%Y)
-now=$(date -d "$(date +%m)/$(($(date +%d)+$offset))/$year" +%s)
+now=$(date -d "$offset days" +%s)
+#now=$(date -d "$(date +%m)/$(($(date +%d)+$offset))/$year" +%s)
 echo $now
 birth=$(date -d "$month/$day/$year" +%s)
 msg=""
 holiday=0
 
-is_leap () {
-    if [ $(($1 % 4)) -eq 0 ]; then
-        if [ $(($var1 % 100)) -eq 0 ]; then
-            if [ $(($var1 % 400)) -eq 0 ]; then
-                echo "IS LEAP YEAR"
-            else
-                echo "NOT LEAP YEAR"
-            fi
-        else
-            echo "ISLEAP YEAR"
-        fi
-    else
-        echo "NOT LEAP YEAR"
-    fi
-}
+
 
 is_leap "$year"
 
@@ -77,3 +67,20 @@ elif [ $diff -ne 0 ] && [ $holiday -eq 0 ]; then
 fi
 exit 0
 
+
+is_leap () {
+    count=0
+    if [ $(($1 % 4)) -eq 0 ]; then
+        if [ $(($var1 % 100)) -eq 0 ]; then
+            if [ $(($var1 % 400)) -eq 0 ]; then
+                exit($count)
+            else
+                count=$((count + 1))
+            fi
+        else
+            count=$((count+1))
+        fi
+    else
+        echo "NOT LEAP YEAR"
+    fi
+}
