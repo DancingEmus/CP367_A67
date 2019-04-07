@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 
 user=($(who | head -1))
+is_leap () {
+    count=0
+    if [ $(($1 % 4)) -eq 0 ]; then
+        if [ $(($var1 % 100)) -eq 0 ]; then
+            if [ $(($var1 % 400)) -eq 0 ]; then
+                exit
+            else
+                count=$((count + 1))
+            fi
+        else
+            count=$((count+1))
+        fi
+    else
+        echo "NOT LEAP YEAR"
+    fi
+    
+}
 echo "Hello $user. Please enter your birthday."
 read -p "Enter day: " day
 read -p "Enter month: " month
@@ -11,13 +28,16 @@ while [ $offset -gt 5478 ]; do
     read -p "Enter current date offset:" offset
 done
 
-if [ $day -eq 29 ] && [ $month -eq 2 ]
-then
-    
+if [ $day -eq 29 ] && [ $month -eq 2 ]; then
+   echo SPECIAL
+fi    
 year=$(date +%Y)
 now=$(date -d "$offset days" +%s)
+
 #now=$(date -d "$(date +%m)/$(($(date +%d)+$offset))/$year" +%s)
 echo $now
+newYear=$(date -d @$now +%Y)
+echo "new year: $newYear"
 birth=$(date -d "$month/$day/$year" +%s)
 msg=""
 holiday=0
@@ -25,6 +45,8 @@ holiday=0
 
 
 is_leap "$year"
+
+echo $count
 
 if [ $now -eq $(date -d "12/25/$year" +%s) ]; then
     msg="Merry Christmas!"
@@ -67,19 +89,5 @@ fi
 exit 0
 
 
-is_leap () {
-    count=0
-    if [ $(($1 % 4)) -eq 0 ]; then
-        if [ $(($var1 % 100)) -eq 0 ]; then
-            if [ $(($var1 % 400)) -eq 0 ]; then
-                exit($count)
-            else
-                count=$((count + 1))
-            fi
-        else
-            count=$((count+1))
-        fi
-    else
-        echo "NOT LEAP YEAR"
-    fi
-}
+
+
