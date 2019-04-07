@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-user=$(who | head -n | awk "{print $1;}")
+user=$(who | head -1 | awk "{print $1;}")
 echo "Hello $user. Please enter your birthday."
 read -p "Enter day: " day
 read -p "Enter month: " month
@@ -57,7 +57,7 @@ if [ $birth -lt $now ]; then
 fi
 
 #calculate (birthday - currentdate) / 86400 to get number of days                                    
-diff=$((($(date -d "$month/$day/$year" +%s)-$($now))/(60*60*24)))
+diff=$((($(date -d "$month/$day/$year" +%s)-($now))/(60*60*24)))
 
 if [ $diff -eq 0 ] && [ $holiday -eq 0 ]; then
     echo Happy Birthday!
